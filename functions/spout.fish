@@ -2,7 +2,6 @@ function spout
     set -e _spout_test_number
     set -e _spout_test_number_passed
     set -e _spout_test_number_failed
-    set -e _spout_test_failed
 
     printf '%s\n' 'TAP version 13'
 
