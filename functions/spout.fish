@@ -15,7 +15,7 @@ function spout
     printf '%s\n' "# pass $_spout_test_number_passed"
     printf '%s\n' "# fail $_spout_test_number_failed"
 
-    if set -q _spout_test_failed
+    if test $_spout_test_number_failed -gt 0
         return 1
     end
 end

@@ -14,7 +14,6 @@ function @test -a name stuff operator expected
         echo "  ..."
 
         set -U _spout_test_number_failed (math $_spout_test_number_failed +1)
-        set -U _spout_test_failed
     end
     breakpoint
 end
