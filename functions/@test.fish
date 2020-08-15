@@ -1,97 +1,92 @@
 function @test
-    set -U _spout_test_number (math $_spout_test_number+1)
+    set name $argv[1]
+    set testArgs $argv[2..-1]
 
-    # Beginning operators
-    argparse --ignore-unknown b c d e f g G k L O p r s S t u w x -- $argv # Operators for files and directories
-    argparse --ignore-unknown n z -- $argv # Operators for text strings
+    set -a operatorList -{b,c,d,e,f,g,G,k,L,O,p,r,s,S,t,u,w,x} # Files and directories
+    set -a operatorList = != -{n,z} # Strings
+    set -a operatorList -{eq,ne,gt,ge,lt,le} # Numbers
 
-    # -eq will cause argparse to create _flag_e, which we must erase
-    for operator in eq ne gt ge lt le
-        if contains -- "-$operator" $argv
-            set -e _flag_(string sub --length 1 $operator)
+    for op in $operatorList
+        set -l operatorIndex (contains --index -- $op $testArgs)
+
+        if test -n "$operatorIndex"
+            set operator $op
+
+            if not set expected (_spout_operator_expectations)
+                set expected $testArgs[(math $operatorIndex+1)]
+            end
+
+            if test "$operatorIndex" -gt 1
+                set actual $testArgs[(math $operatorIndex-1)]
+            end
         end
     end
 
-    set -l beginningOperators (set -l -n | string replace --filter '_flag_' '-')
-
-    set -l name $argv[1]
-    set -l stuff $argv[2]
-    set -l operator $argv[3]
-    set -l expected $argv[4]
-
-    set testArgs $stuff $operator $expected
-
-    # Check for beginning operators
-    if test -n "$beginningOperators"
-        set operator $beginningOperators
-
-        if test -n "$expected"
-            set stuff $expected
-        end
-        set testArgs $operator $stuff
-
-        set expected (_spout_beginning_operators_expectations)
-    end
+    set _spout_test_number (math $_spout_test_number +1)
 
     if test $testArgs
-        printf '%s\n' "ok $_spout_test_number $name"
+        echo "ok $_spout_test_number $name"
 
-        set -U _spout_test_number_passed (math $_spout_test_number_passed+1)
+        set _spout_test_number_passed (math $_spout_test_number_passed +1)
+        return 0
     else
-        printf '%s\n' "not ok $_spout_test_number $name"
-        printf '%s\n' "  ---"
-        printf '%s\n' "    operator: $operator"
-        printf '%s\n' "    expected: $expected"
-        printf '%s\n' "    actual:   $stuff"
-        printf '%s\n' "  ..."
+        echo "not ok $_spout_test_number $name"
+        echo "  ---"
+        echo "    operator: $operator"
+        echo "    expected: $expected"
+        echo "    actual:   $actual"
+        echo "  ..."
 
-        set -U _spout_test_number_failed (math $_spout_test_number_failed+1)
+        set _spout_test_number_failed (math $_spout_test_number_failed +1)
+        return 1
     end
 end
 
-function _spout_beginning_operators_expectations --no-scope-shadowing
+function _spout_operator_expectations --no-scope-shadowing
     switch $operator
         case '-n'
-            printf '%s\n' "a non-zero length string"
+            echo "a non-zero length string"
+            set actual $testArgs[(math $operatorIndex+1)]
         case '-z'
-            printf '%s\n' "a zero length string"
+            echo "a zero length string"
+            set actual $testArgs[(math $operatorIndex+1)]
         case '-b'
-            printf '%s\n' "a block device"
+            echo "a block device"
         case '-c'
-            printf '%s\n' "a character device"
+            echo "a character device"
         case '-d'
-            printf '%s\n' "a directory"
+            echo "a directory"
         case '-e'
-            printf '%s\n' "an existing file"
+            echo "an existing file"
         case '-f'
-            printf '%s\n' "a regular file"
+            echo "a regular file"
         case '-g'
-            printf '%s\n' "a file with the set-group-ID bit set"
+            echo "a file with the set-group-ID bit set"
         case '-G'
-            printf '%s\n' "a file with same group ID as the current user"
+            echo "a file with same group ID as the current user"
         case '-k'
-            printf '%s\n' "a file with the sticky bit set"
+            echo "a file with the sticky bit set"
         case '-L'
-            printf '%s\n' "a symbolic link"
+            echo "a symbolic link"
         case '-O'
-            printf '%s\n' "a file owned by the current user"
+            echo "a file owned by the current user"
         case '-p'
-            printf '%s\n' "a named pipe"
+            echo "a named pipe"
         case '-r'
-            printf '%s\n' "a file marked as readable"
+            echo "a file marked as readable"
         case '-s'
-            printf '%s\n' "a file of size greater than zero"
+            echo "a file of size greater than zero"
         case '-S'
-            printf '%s\n' "a socket"
+            echo "a socket"
         case '-t'
-            printf '%s\n' "a terminal tty file descriptor"
+            echo "a terminal tty file descriptor"
         case '-u'
-            printf '%s\n' "a file with the set-user-ID bit set"
+            echo "a file with the set-user-ID bit set"
         case '-w'
-            printf '%s\n' "a file marked as writable"
+            echo "a file marked as writable"
         case '-x'
-            printf '%s\n' "a file marked as executable"
+            echo "a file marked as executable"
         case '*'
-            printf '%s\n' "a valid operator"
+            return 1
     end
 end
