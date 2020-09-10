@@ -1,15 +1,13 @@
-function @test
-    set name $argv[1]
+function @test -a name
     set testArgs $argv[2..-1]
 
-    set -a operatorList -{b,c,d,e,f,g,G,k,L,O,p,r,s,S,t,u,w,x} # Files and directories
+    # Ordered by how common tests are, given that we search iteratively through the list
     set -a operatorList = != -{n,z} # Strings
     set -a operatorList -{eq,ne,gt,ge,lt,le} # Numbers
+    set -a operatorList -{b,c,d,e,f,g,G,k,L,O,p,r,s,S,t,u,w,x} # Files and directories
 
     for op in $operatorList
-        set -l operatorIndex (contains --index -- $op $testArgs)
-
-        if test -n "$operatorIndex"
+        if set -l operatorIndex (contains --index -- $op $testArgs)
             set operator $op
 
             if not set expected (_spout_operator_expectations)
@@ -19,6 +17,8 @@ function @test
             if test "$operatorIndex" -gt 1
                 set actual $testArgs[(math $operatorIndex-1)]
             end
+
+            break
         end
     end
 
@@ -46,10 +46,8 @@ function _spout_operator_expectations --no-scope-shadowing
     switch $operator
         case '-n'
             echo "a non-zero length string"
-            set actual $testArgs[(math $operatorIndex+1)]
         case '-z'
             echo "a zero length string"
-            set actual $testArgs[(math $operatorIndex+1)]
         case '-b'
             echo "a block device"
         case '-c'
