@@ -7,11 +7,9 @@ function @test -a name
 
             if set -l expectationIndex (contains --index -- $op $_spout_operators_with_expectations)
                 set expected $_spout_expectations[$expectationIndex]
+                set actual $testArgs[(math $operatorIndex+1)]
             else
                 set expected $testArgs[(math $operatorIndex+1)]
-            end
-
-            if test "$operatorIndex" -gt 1
                 set actual $testArgs[(math $operatorIndex-1)]
             end
 
