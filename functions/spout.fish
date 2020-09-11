@@ -5,7 +5,6 @@ function spout
     set -a _spout_operators -{b,c,d,e,f,g,G,k,L,O,p,r,s,S,t,u,w,x} # Files and directories
 
     set -U _spout_operators_with_expectations -{n,z,b,c,d,e,f,g,G,k,L,O,p,r,s,S,t,u,w,x}
-
     set -U _spout_expectations \
         "a non-zero length string" \
         "a zero length string" \

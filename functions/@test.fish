@@ -1,12 +1,12 @@
 function @test -a name
-    set testArgs $argv[2..-1]
+    set -l testArgs $argv[2..-1]
 
     for op in $_spout_operators
         if set -l operatorIndex (contains --index -- $op $testArgs)
             set operator $op
 
-            if set -l index (contains --index -- $op $_spout_operators_with_expectations)
-                set expected $_spout_expectations[$index]
+            if set -l expectationIndex (contains --index -- $op $_spout_operators_with_expectations)
+                set expected $_spout_expectations[$expectationIndex]
             else
                 set expected $testArgs[(math $operatorIndex+1)]
             end
@@ -25,7 +25,6 @@ function @test -a name
         echo "ok $_spout_test_number $name"
 
         set _spout_test_number_passed (math $_spout_test_number_passed +1)
-        return 0
     else
         echo "not ok $_spout_test_number $name
   ---
@@ -35,6 +34,5 @@ function @test -a name
   ..."
 
         set _spout_test_number_failed (math $_spout_test_number_failed +1)
-        return 1
     end
 end
