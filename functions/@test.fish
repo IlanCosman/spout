@@ -22,17 +22,16 @@ function @test -a name
     set _spout_test_number (math $_spout_test_number +1)
 
     if test $testArgs
-        printf '\n%s' "ok $_spout_test_number $name"
+        echo "ok $_spout_test_number $name"
 
         set _spout_test_number_passed (math $_spout_test_number_passed +1)
     else
-        printf '%s' "
-not ok $_spout_test_number $name
-  ---
-    operator: $operator
-    expected: $expected
-    actual:   $actual
-  ..."
+        echo "not ok $_spout_test_number $name"
+        echo "  ---"
+        echo "    operator: $operator"
+        echo "    expected: $expected"
+        echo "    actual:   $actual"
+        echo "  ..."
 
         set _spout_test_number_failed (math $_spout_test_number_failed +1)
     end

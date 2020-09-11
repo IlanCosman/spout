@@ -37,11 +37,9 @@ function spout
         fish $file
     end
 
-    printf '\n%s' "
-1..$_spout_test_number
-# pass $_spout_test_number_passed
-# fail $_spout_test_number_failed
-"
+    echo "1..$_spout_test_number"
+    echo "# pass $_spout_test_number_passed"
+    echo "# fail $_spout_test_number_failed"
 
     if test $_spout_test_number_failed -gt 0
         return 1
