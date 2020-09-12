@@ -1,3 +1,3 @@
 function @mesg
-    echo "# $argv"
+    printf '%s\n' "# $argv"
 end
