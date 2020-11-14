@@ -15,7 +15,5 @@ function spout
         "# pass $_spout_test_number_passed" \
         "# fail $_spout_test_number_failed"
 
-    if test $_spout_test_number_failed -gt 0
-        return 1
-    end
+    return $_spout_test_number_failed
 end
