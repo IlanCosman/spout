@@ -9,7 +9,7 @@ Spout is a testing framework for [fish]. Tests run in their own sub-shells, so y
 With [fisher][]:
 
 ```console
-fisher add IlanCosman/spout
+fisher install IlanCosman/spout
 ```
 
 ## Acknowledgements
